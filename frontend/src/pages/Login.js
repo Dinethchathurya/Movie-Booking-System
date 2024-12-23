@@ -1,18 +1,23 @@
 import React from 'react';
+import Footer from '../components/Footer';
+import Navbar from '../components/Navbar';
 
 const Login = () => {
     return (
-        <div className="min-h-screen bg-cover bg-center flex flex-col justify-between">
-            <div className="flex justify-center items-center py-8">
-                <div className="bg-white bg-opacity-10 backdrop-blur-md border border-white rounded-[12px_70px_15px_70px] p-8 w-full max-w-md">
+        <div className="flex flex-col min-h-screen">
+            <Navbar />
+            <div className="flex-grow flex items-center justify-center bg-cover bg-center mt-10 mb-10">
+                <div className="bg-white bg-opacity-10 backdrop-blur-md border border-white rounded-xl p-8 w-full max-w-md">
                     <h2 className="text-4xl font-bold text-white text-center mb-4">Login</h2>
-                    <p className="text-white text-opacity-75 text-center mb-8">Please enter your login and password!</p>
+                    <p className="text-white text-opacity-75 text-center mb-8">
+                        Please enter your login and password!
+                    </p>
 
                     <div className="mb-6">
                         <input
                             type="email"
                             placeholder="Email"
-                            className="form-input block w-full rounded-[10px_50px_7px_50px] p-3 text-gray-700 focus:outline-none focus:ring focus:ring-black"
+                            className="form-input block w-full rounded-md p-3 text-gray-700 focus:outline-none focus:ring focus:ring-gray-50"
                         />
                     </div>
 
@@ -20,7 +25,7 @@ const Login = () => {
                         <input
                             type="password"
                             placeholder="Password"
-                            className="form-input block w-full rounded-[10px_50px_7px_50px] p-3 text-gray-700 focus:outline-none focus:ring focus:ring-green-500"
+                            className="form-input block w-full rounded-md p-3 text-gray-700 focus:outline-none focus:ring focus:ring-gray-50"
                         />
                     </div>
 
@@ -30,17 +35,18 @@ const Login = () => {
 
                     <button
                         type="submit"
-                        className="w-full bg-green-900 text-green-500 py-2 px-4 rounded-[7px_50px_7px_50px] text-lg font-semibold hover:bg-green-700"
+                        className="w-full bg-[#ed0c6e] text-white py-2 px-4 rounded-md text-lg font-semibold hover:bg-pink-500"
                     >
                         Login
                     </button>
 
                     <p className="mt-6 text-center text-white">
                         Don't have an account?{' '}
-                        <a href="#" className="text-green-500 font-bold hover:underline">Sign Up</a>
+                        <a href="/register" className="text-white font-bold hover:underline">Sign Up</a>
                     </p>
                 </div>
             </div>
+            <Footer />
         </div>
     );
 };

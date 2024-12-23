@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import '../style/Footer.css';
+import './style/Footer.css';
 
 const Footer = () => {
   return (
@@ -9,9 +9,9 @@ const Footer = () => {
         <div className="footer-column">
           <h3>Explore</h3>
           <ul>
-            <li><Link to="#">Movies</Link></li>
-            <li><Link to="#">Home</Link></li>
-            <li><Link to="#">Locations</Link></li>
+            <li><Link to="/movie">Movies</Link></li>
+            <li><Link to="/">Home</Link></li>
+            <li><Link to="/location">Locations</Link></li>
             <li><Link to="#">Deals and Exclusives</Link></li>
             <li><Link to="#">Advertise</Link></li>
             <li><Link to="#">About Us</Link></li>
@@ -30,12 +30,11 @@ const Footer = () => {
         <div className="footer-column subscribe">
           <h3 className='leading-tight'>Subscribe to Our Newsletter</h3>
           <form className='flex flex-col items-center mt-7'>
-            <input
-            className=' p-2 text-base w-[80%] max-w-[300px]  border border-gray-300 rounded-md mb-5'
-              type="email"
-              placeholder="Enter your email"
-              required
-            />
+          <input
+            type="email"
+            placeholder="Enter your email"
+            className="form-input w-[80%]  p-2 text-gray-700 focus:outline-none rounded-md focus:ring focus:ring-gray-50 max-w-[300px] border border-gray-300 mb-5"
+          />
             <button className='p-2 bg-[#ed0c6e] text-white text-base border-none rounded-md cursor-pointer w-[80%] max-w-[300px]' type="submit">Subscribe</button>
           </form>
         </div>
