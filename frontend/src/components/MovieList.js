@@ -48,7 +48,7 @@ function MovieList() {
                   className="watch-trailer"
                   onClick={() => handleWatchTrailerClick(movie.trailerUrl)}
                 >
-                  Watch Trailer
+                  Trailer
                 </button>
                 <button
                   className="more-info"
