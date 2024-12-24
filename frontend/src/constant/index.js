@@ -12,6 +12,7 @@ const movies = [
     status: "NOW SCREENING",
     trailerUrl: "https://www.youtube.com/watch?v=5gYVdJtXjFg",
     cover: image1,
+    info: "https://www.imdb.com/title/tt13186482/",
   },
   {
     id: 2,
@@ -21,6 +22,7 @@ const movies = [
     status: "NOW SCREENING",
     trailerUrl: "https://www.youtube.com/watch?v=1jl4bbPz4Kw",
     cover: image4,
+    info: "https://www.imdb.com/title/tt13186482/",
   },
   {
     id: 3,
@@ -30,6 +32,7 @@ const movies = [
     status: "NOW SCREENING",
     trailerUrl: "https://www.youtube.com/watch?v=1L_Hxu1rPY0",
     cover: image3,
+    info: "https://www.imdb.com/title/tt13622970/",
   },
   {
     id: 4,
@@ -39,6 +42,7 @@ const movies = [
     status: "NOW SCREENING",
     trailerUrl: "https://www.youtube.com/watch?v=QgwcPU9kpyY",
     cover: image2,
+    info: "https://www.imdb.com/title/tt1262426/ß",
   },
 ];
 

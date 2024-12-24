@@ -1,10 +1,12 @@
 import React, { useState } from "react";
+import { useLocation } from "react-router-dom";
 import "./style/Navbar.css";
 import Logo from "../assets/cinemax_logo.png";
 import menuItems from "../constant/menu";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -30,7 +32,11 @@ const Navbar = () => {
         {menuItems.map((item, index) => (
           <a
             key={index}
-            className="text-white text-base p-1.5 px-2.5 rounded-md transition-colors duration-300 ease-in-out hover:text-[#ed0c6e]"
+            className={`text-base p-1.5 px-2.5 rounded-md transition-colors duration-300 ease-in-out ${
+              location.pathname === item.href
+                ? "text-[#ed0c6e]"
+                : "text-white hover:text-[#ed0c6e]"
+            }`}
             href={item.href}
           >
             {item.text}
@@ -93,9 +99,13 @@ const Navbar = () => {
           {menuItems.map((item, index) => (
             <a
               key={index}
-              className="text-white text-md ml-3 p-4 hover:text-[#ed0c6e]"
+              className={`text-md ml-3 p-4 ${
+                location.pathname === item.href
+                  ? "text-[#ed0c6e]"
+                  : "text-white hover:text-[#ed0c6e]"
+              }`}
               href={item.href}
-              onClick={() => setIsOpen(false)} // Close menu on link click
+              onClick={() => setIsOpen(false)}
             >
               {item.text}
             </a>

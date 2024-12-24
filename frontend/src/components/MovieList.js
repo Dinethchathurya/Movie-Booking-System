@@ -50,12 +50,10 @@ function MovieList() {
                 >
                   Trailer
                 </button>
-                <button
-                  className="more-info"
-                  onClick={() => handleMoreInfoClick(movie.id)}
-                >
-                  More Info
-                </button>
+
+                <a href={movie.info} target="_blank">
+                  <button className="more-info">More Info</button>
+                </a>
               </div>
             </div>
             <h3 className="movie-title text-white">{movie.title}</h3>
