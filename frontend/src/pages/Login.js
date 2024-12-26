@@ -1,8 +1,49 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+    const BASE_URL = "http://localhost:9000";
+
+    const [formData, setFormData] = useState({
+        email: "",
+        password: "",
+      });
+      const [error, setError] = useState(null);
+      const navigate = useNavigate();
+    
+      const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+      };
+    
+      const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError(null); 
+    
+        try {
+          const response = await fetch(`${BASE_URL}/api/auth/signin`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+          });
+    
+          const data = await response.json();
+    
+          if (!response.ok) {
+            setError(data.message || "Invalid credentials. Please try again.");
+          } else {
+            console.log("Login success")
+            navigate("/"); 
+          }
+        } catch (err) {
+          setError("Failed to connect to the server. Please try again later.");
+        }
+      };
+
     return (
         <div className="flex flex-col min-h-screen">
             <Navbar />
@@ -13,19 +54,30 @@ const Login = () => {
                         Please enter your login and password!
                     </p>
 
+                    {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+
+                    <form onSubmit={handleSubmit}>
                     <div className="mb-6">
                         <input
                             type="email"
+                            name="email"
                             placeholder="Email"
+                            value={formData.email}
+                            onChange={handleChange}
                             className="form-input block w-full rounded-md p-3 text-gray-700 focus:outline-none focus:ring focus:ring-gray-50"
+                            required
                         />
                     </div>
 
                     <div className="mb-6">
                         <input
                             type="password"
+                            name="password"
                             placeholder="Password"
+                            value={formData.password}
+                            onChange={handleChange}
                             className="form-input block w-full rounded-md p-3 text-gray-700 focus:outline-none focus:ring focus:ring-gray-50"
+                            required
                         />
                     </div>
 
@@ -39,6 +91,7 @@ const Login = () => {
                     >
                         Login
                     </button>
+                    </form>
 
                     <p className="mt-6 text-center text-white">
                         Don't have an account?{' '}

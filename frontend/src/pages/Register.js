@@ -1,14 +1,59 @@
 import React, { useState } from "react";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
+    const BASE_URL = "http://localhost:9000";
+    const navigate = useNavigate(); 
+    
 
-    const [gender, setGender] = useState("");
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    gender: "",
+    nic: "",
+    address: "",
+    mobile: "",
+    password: "",
+    confirmPassword: "",
+  });
 
-    const handleGenderChange = (event) => {
-      setGender(event.target.value);
-    };
+  const [error, setError] = useState(null); 
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${BASE_URL}/api/auth/signup`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.message || "Something went wrong. Please try again.");
+      } else {
+        navigate("/login"); 
+      }
+    } catch (err) {
+      setError("Failed to connect to the server. Please try again later.");
+    }  };
 
     return(
         <div className="flex flex-col min-h-screen">
@@ -20,18 +65,28 @@ const Register = () => {
                     Please enter your details!
                     </p>
 
+                    {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+
+                    <form onSubmit={handleSubmit}>
                     <div className="mb-6">
                         <input
-                            type="firstname"
+                            type="text"
+                            name="firstName"
                             placeholder="First Name"
+                            value={formData.firstName}
+                            onChange={handleChange}
                             className="form-input block w-full rounded-md p-3 text-gray-700 focus:outline-none focus:ring focus:ring-gray-50"
+                            required
                         />
                     </div>
 
                     <div className="mb-6">
                         <input
-                            type="lastname"
+                            type="text"
+                            name="lastName"
                             placeholder="Last Name"
+                            value={formData.lastName}
+                            onChange={handleChange}
                             className="form-input block w-full rounded-md p-3 text-gray-700 focus:outline-none focus:ring focus:ring-gray-50"
                         />
                     </div>
@@ -39,8 +94,12 @@ const Register = () => {
                     <div className="mb-6">
                         <input
                             type="email"
+                            name="email"
                             placeholder="Email Address"
+                            value={formData.email}
+                            onChange={handleChange}
                             className="form-input block w-full rounded-md p-3 text-gray-700 focus:outline-none focus:ring focus:ring-gray-50"
+                            required
                         />
                     </div>
 
@@ -48,19 +107,22 @@ const Register = () => {
                     <label className="flex items-center space-x-2">
                         <input
                             type="radio"
+                            name="gender"
                             value="Male"
-                            checked={gender === "Male"}
-                            onChange={handleGenderChange}
+                            checked={formData.gender === "Male"}
+                            onChange={handleChange}
                             className="w-4 h-4 text-blue-600 focus:ring-blue-500 focus:ring-2"
+                            required
                         />
                         <span>Male</span>
                     </label>
                     <label className="flex items-center space-x-2">
                         <input
                             type="radio"
+                            name="gender"
                             value="Female"
-                            checked={gender === "Female"}
-                            onChange={handleGenderChange}
+                            checked={formData.gender === "Female"}
+                            onChange={handleChange}
                             className="w-4 h-4 text-blue-600 focus:ring-blue-500 focus:ring-2"
                         />
                         <span>Female</span>
@@ -70,16 +132,22 @@ const Register = () => {
 
                     <div className="mb-6">
                         <input
-                            type="NIC"
+                            type="text"
+                            name="nic"
                             placeholder="NIC Number"
+                            value={formData.nic}
+                            onChange={handleChange}
                             className="form-input block w-full rounded-md p-3 text-gray-700 focus:outline-none focus:ring focus:ring-gray-50"
                         />
                     </div>
 
                     <div className="mb-6">
                         <input
-                            type="address"
+                            type="text"
+                            name="address"
                             placeholder="Address"
+                            value={formData.address}
+                            onChange={handleChange}
                             className="form-input block w-full rounded-md p-3 text-gray-700 focus:outline-none focus:ring focus:ring-gray-50"
                         />
                     </div>
@@ -87,7 +155,10 @@ const Register = () => {
                     <div className="mb-6">
                         <input
                             type="number"
+                            name="mobile"
                             placeholder="Mobile Number"
+                            value={formData.mobile}
+                            onChange={handleChange}
                             className="form-input block w-full rounded-md p-3 text-gray-700 focus:outline-none focus:ring focus:ring-gray-50"
                         />
                     </div>
@@ -95,16 +166,24 @@ const Register = () => {
                     <div className="mb-6">
                         <input
                             type="password"
+                            name="password"
                             placeholder="Password"
+                            value={formData.password}
+                            onChange={handleChange}
                             className="form-input block w-full rounded-md p-3 text-gray-700 focus:outline-none focus:ring focus:ring-gray-50"
+                            required
                         />
                     </div>
 
                     <div className="mb-7">
                         <input
-                            type="confirm-password"
+                            type="password"
+                            name="confirmPassword"
                             placeholder="Confirm Password"
+                            value={formData.confirmPassword}
+                            onChange={handleChange}
                             className="form-input block w-full rounded-md p-3 text-gray-700 focus:outline-none focus:ring focus:ring-gray-50"
+                            required
                         />
                     </div>
 
@@ -114,6 +193,7 @@ const Register = () => {
                     >
                         Create Account
                     </button>
+                    </form>
 
                     <p className="mt-6 text-center text-white">
                         Have an account?{' '}
