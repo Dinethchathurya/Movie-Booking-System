@@ -5,9 +5,9 @@ import OrderDetails from '../components/OrderDetails';
 const MyAccount = () => {
     return(
         <div>
-            <Navbar/>
+
             <OrderDetails/>
-            <Footer/>
+
         </div>
     );
 }

@@ -2,26 +2,27 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "./style/Footer.css";
 import menuItems from "../constant/menu";
-import movies from "../constant/index";
+import movies from "../constant/movies";
 
 const Footer = () => {
   return (
-    <footer className="footer bg-[#131334] text-white py-12 text-center">
+    <footer className=" bg-[#131334] text-white py-12 text-center">
       <div className="footer-container flex justify-between max-w-[1200px] mx-auto px-5">
         <div className="footer-column">
           <h3>Quick Links</h3>
           <ul>
-            {menuItems.map((item, index) => (
-              <li key={index}>
-                <Link to={item.href}>{item.text}</Link>
-              </li>
-            ))}
+            {menuItems
+              .map((item, index) => (
+                <li key={index}>
+                  <Link to={item.href}>{item.text}</Link>
+                </li>
+              ))}
           </ul>
         </div>
         <div className="footer-column">
           <h3>Now Showing</h3>
           <ul>
-            {movies.map((item, index) => (
+            {movies.filter((item) => item.status === "NOW SCREENING").map((item, index) => (
               <li key={index}>
                 <Link to={item.href}>{item.title}</Link>
               </li>
@@ -46,9 +47,8 @@ const Footer = () => {
           </form>
         </div>
       </div>
-      <div className="footer-bottom  mt-5 text-sm border-t border-[#444] pt-2">
-        <p className="m-0">&copy; 2024 CINEMAX. All Rights Reserved.</p>
-      </div>
+      <hr className="border-t border-1 border-gray-700 my-4" />
+      <div>© 2025 CINEMAX All Rights Reserved</div>
     </footer>
   );
 };

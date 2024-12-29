@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import movies from "../constant/movies";
 
 const SeatLayout = () => {
   const rows = ["A", "B", "C", "D", "E", "F", "G"];
@@ -10,6 +11,9 @@ const SeatLayout = () => {
   );
 
   const [selectedSeats, setSelectedSeats] = useState([]);
+  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedTime, setSelectedTime] = useState("");
+  const [selectedMovie, setSelectedMovie] = useState("");
 
   const handleSeatClick = (seat) => {
     if (selectedSeats.includes(seat)) {
@@ -28,9 +32,61 @@ const SeatLayout = () => {
 
   return (
     <div className="container mx-auto">
-      <div className="flex flex-col lg:flex-row text-white mt-14 mb-14 gap-2 ">
+      <div className="flex flex-col lg:flex-row text-white mt-14 mb-14 gap-2">
         {/* Seat Layout Section */}
-        <div className="flex flex-col gap-3  overflow-x-auto whitespace-nowrap m-5  ">
+        <div className="flex flex-col gap-3 overflow-x-auto whitespace-nowrap m-5">
+
+          <div className="mb-4 flex gap-4">
+            <div className="flex-1">
+              <label className="block text-black font-bold mb-2">
+                Select Date:
+              </label>
+              <input
+                type="date"
+                className="p-2 border rounded text-black"
+                value={selectedDate}
+                min={new Date().toISOString().split("T")[0]}
+                onChange={(e) => setSelectedDate(e.target.value)}
+              />
+            </div>
+
+            {/* Time Filter */}
+            <div className="flex-1">
+              <label className="block text-black font-bold mb-2">
+                Select Time:
+              </label>
+              <select
+                className="p-2 border rounded text-black w-full"
+                value={selectedTime}
+                onChange={(e) => setSelectedTime(e.target.value)}
+              >
+                <option value="10:30 AM">10:30 AM</option>
+                <option value="1:00 PM">1:00 PM</option>
+                <option value="4:30 PM">4:30 PM</option>
+                <option value="7:30 PM">7:30 PM</option>
+              </select>
+            </div>
+
+            {/* Movie Filter */}
+            <div className="flex-1">
+              <label className="block text-black font-bold mb-2">
+                Select Film:
+              </label>
+              <select
+                className="p-2 border rounded text-black w-full"
+                value={selectedMovie}
+                onChange={(e) => setSelectedMovie(e.target.value)}
+              >
+                <option value="">Select Movie</option>
+                {movies.map((movie) => (
+                  <option key={movie.id} value={movie.title}>
+                    {movie.title}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
           {rows.map((row) => (
             <div key={row} className="flex gap-8">
               {columns.map((col, colIndex) => (
@@ -43,12 +99,12 @@ const SeatLayout = () => {
                         <div
                           key={seat}
                           onClick={() => handleSeatClick(seat)}
-                          className={`w-6 h-6 lg  flex items-center justify-center border rounded-md cursor-pointer ${
+                          className={`w-6 h-6 lg flex items-center justify-center border rounded-md cursor-pointer ${
                             selectedSeats.includes(seat)
                               ? "bg-red-500 text-white"
                               : "bg-gray-200 text-gray-800"
                           }`}
-                          style={{ fontSize: "0.7rem" }} // Adjusted font size
+                          style={{ fontSize: "0.7rem" }}
                         >
                           {seat}
                         </div>
@@ -80,43 +136,26 @@ const SeatLayout = () => {
           <h2 className="text-2xl font-bold mb-4 text-black text-center">
             Seat Booking
           </h2>
-          <div className="flex items-center justify-between mb-4">
-            <label className="block font-semibold text-black mr-4 w-1/3">
-              Location:
-            </label>
-            <select className="w-2/3 p-2 border rounded text-black">
-              <option>Select Hall</option>
-              <option>Hall 1</option>
-              <option>Hall 2</option>
-              <option>Hall 3</option>
-            </select>
-          </div>
-
-          <div className="flex items-center justify-between mb-4">
-            <label className="block font-semibold text-black mr-4 w-1/3">
-              Name:
-            </label>
-            <select className="w-2/3 p-2 border rounded text-black">
-              <option>Select Film</option>
-              <option>Movie 1</option>
-              <option>Movie 2</option>
-              <option>Movie 3</option>
-            </select>
-          </div>
-
-          <div className="flex items-center justify-between mb-4">
-            <label className="block font-semibold text-black mr-4 w-1/3">
-              Time:
-            </label>
-            <select className="w-2/3 p-2 border rounded text-black">
-              <option>Select Time</option>
-              <option>10:00 AM</option>
-              <option>1:00 PM</option>
-              <option>4:00 PM</option>
-            </select>
-          </div>
 
           <div className="mb-7">
+            <div className="flex justify-between mb-3">
+              <p className="font-semibold text-black">Selected Date:</p>
+              <p className="font-semibold text-black">
+                {selectedDate || "None"}
+              </p>
+            </div>
+            <div className="flex justify-between mb-3">
+              <p className="font-semibold text-black">Selected Time:</p>
+              <p className="font-semibold text-black">
+                {selectedTime || "None"}
+              </p>
+            </div>
+            <div className="flex justify-between mb-3">
+              <p className="font-semibold text-black">Selected Movie:</p>
+              <p className="font-semibold text-black">
+                {selectedMovie || "None"}
+              </p>
+            </div>
             <div className="flex justify-between mb-3">
               <p className="font-semibold text-black">Selected Seats:</p>
               <p className="font-semibold text-black">

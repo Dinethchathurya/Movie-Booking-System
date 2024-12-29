@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import Footer from '../components/Footer';
-import Navbar from '../components/Navbar';
+
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
@@ -45,8 +44,8 @@ const Login = () => {
       };
 
     return (
-        <div className="flex flex-col min-h-screen">
-            <Navbar />
+      <div className="flex flex-col min-h-screen bg-[#000025]">
+
             <div className="flex-grow flex items-center justify-center bg-cover bg-center mt-10 mb-10">
                 <div className="bg-white bg-opacity-10 backdrop-blur-md border border-white rounded-xl p-8 w-full max-w-md">
                     <h2 className="text-4xl font-bold text-white text-center mb-4">Login</h2>
@@ -99,7 +98,7 @@ const Login = () => {
                     </p>
                 </div>
             </div>
-            <Footer />
+
         </div>
     );
 };
