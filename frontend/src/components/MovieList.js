@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./style/MovieList.css";
-import movies from "../constant/index";
+import movies from "../constant/movies";
 function MovieList() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [trailerUrl, setTrailerUrl] = useState("");
@@ -24,42 +24,44 @@ function MovieList() {
   };
 
   return (
-    <div className="text-center p-5">
+    <div className="text-center p-5 bg-[#000025]">
       <h2 className="text-3xl font-semibold uppercase tracking-wide mb-7 mt-2">
         Now Showing
       </h2>
       <div className="movie-grid">
-        {movies.map((movie, index) => (
-          <div className="movie-card" key={index}>
-            <div className="movie-image-container">
-              <img
-                src={movie.image}
-                alt={movie.title}
-                className="movie-poster"
-              />
-              <div className="movie-buttons">
-                <button
-                  className="buy-ticket"
-                  onClick={() => handleBuyTicketClick(movie.id)}
-                >
-                  Buy Tickets
-                </button>
-                <button
-                  className="watch-trailer"
-                  onClick={() => handleWatchTrailerClick(movie.trailerUrl)}
-                >
-                  Trailer
-                </button>
+        {movies
+          .filter((movie) => movie.status === "NOW SCREENING")
+          .map((movie, index) => (
+            <div className="movie-card" key={index}>
+              <div className="movie-image-container">
+                <img
+                  src={movie.image}
+                  alt={movie.title}
+                  className="movie-poster"
+                />
+                <div className="movie-buttons">
+                  <button
+                    className="buy-ticket"
+                    onClick={() => handleBuyTicketClick(movie.id)}
+                  >
+                    Buy Tickets
+                  </button>
+                  <button
+                    className="watch-trailer"
+                    onClick={() => handleWatchTrailerClick(movie.trailerUrl)}
+                  >
+                    Trailer
+                  </button>
 
-                <a href={movie.info} target="_blank">
-                  <button className="more-info">More Info</button>
-                </a>
+                  <a href={movie.info} target="_blank">
+                    <button className="more-info">More Info</button>
+                  </a>
+                </div>
               </div>
+              <h3 className="movie-title text-white">{movie.title}</h3>
+              <p className="movie-status">{movie.status}</p>
             </div>
-            <h3 className="movie-title text-white">{movie.title}</h3>
-            <p className="movie-status">{movie.status}</p>
-          </div>
-        ))}
+          ))}
       </div>
 
       {isModalOpen && (

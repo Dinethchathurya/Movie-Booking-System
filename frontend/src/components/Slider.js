@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import movies from "../constant/index";
+import movies from "../constant/movies";
 
 function Slider() {
   // Extract cover images from the movies list

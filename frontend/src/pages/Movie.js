@@ -7,10 +7,10 @@ import UpcomingMovies from "../components/UpcomingList";
 const Movie = () => {
     return (
         <div>
-            <Navbar/>
+
             <MovieList/>
             <UpcomingMovies/>
-            <Footer/>
+
         </div>
     );
 }
