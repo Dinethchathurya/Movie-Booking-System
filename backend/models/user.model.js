@@ -15,7 +15,6 @@ const userSchema = new mongoose.Schema({
     },
     gender: {
         type: String,
-        required: true,
     },
     nic: {
         type: String,
@@ -30,6 +29,14 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    isAdmin: {
+      type: Boolean,
+      default: false,
+    },
+    moviesAdded : [{
+        type: mongoose.Types.ObjectId,
+        ref: "Movie"
+    }],
     bookings: [{ type: mongoose.Types.ObjectId, ref: "Booking" }],
 });
 

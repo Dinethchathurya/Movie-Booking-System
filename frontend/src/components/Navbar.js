@@ -1,12 +1,14 @@
 import React, { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import "./style/Navbar.css";
 import Logo from "../assets/cinemax_logo.png";
 import menuItems from "../constant/menu";
+import { useSelector } from "react-redux";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const {currentUser} = useSelector(state => state.user)
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -46,17 +48,18 @@ const Navbar = () => {
 
       <div className="nav-buttons flex gap-4 mr-2">
         <a
-          href="/buytickets"
+          href="/movie"
           className="px-4 py-1 md:py-2 text-sm rounded border-2 border-[#ed0c6e] bg-[#ed0c6e] text-white transition-all duration-300 hover:bg-white hover:text-[#ed0c6e]"
         >
           Buy Ticket
         </a>
-        <a
-          href="/login"
-          className="px-4 py-1 md:py-2 text-sm rounded border-2 border-white text-white transition-all duration-300 hover:bg-white hover:text-blue-900"
-        >
-          Login
-        </a>
+        <Link to='/dashboard/profile'>
+    {currentUser ? (
+      <img className='rounded-full h-7 w-7 object-cover' src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhVSHxKxeD9Tdg65juWHA_tU_Hyt89DgJ3qQ&s" alt='profile' />
+    ) : (
+      <p className=' text-slate-700 hover:underline'>Login</p>
+    )}
+    </Link>
       </div>
 
       <div

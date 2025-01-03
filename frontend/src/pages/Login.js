@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from 'react-redux';
+import {signInSuccess, signInFailure} from '../redux/user/userSlice.js';
 
 const Login = () => {
     const BASE_URL = "http://localhost:9000";
@@ -9,8 +11,9 @@ const Login = () => {
         email: "",
         password: "",
       });
-      const [error, setError] = useState(null);
+      const {error} = useSelector((state) => state.user);
       const navigate = useNavigate();
+      const dispatch = useDispatch(); 
     
       const handleChange = (e) => {
         const { name, value } = e.target;
@@ -19,11 +22,11 @@ const Login = () => {
     
       const handleSubmit = async (e) => {
         e.preventDefault();
-        setError(null); 
     
         try {
           const response = await fetch(`${BASE_URL}/api/auth/signin`, {
             method: "POST",
+            credentials: 'include',
             headers: {
               "Content-Type": "application/json",
             },
@@ -33,13 +36,14 @@ const Login = () => {
           const data = await response.json();
     
           if (!response.ok) {
-            setError(data.message || "Invalid credentials. Please try again.");
+            dispatch(signInFailure(data.message || "Invalid credentials. Please try again."));
           } else {
-            console.log("Login success")
+            dispatch(signInSuccess(data));
+            console.log("Success");
             navigate("/"); 
           }
         } catch (err) {
-          setError("Failed to connect to the server. Please try again later.");
+          dispatch(signInFailure(err.message || "Failed to connect to the server. Please try again later.."));
         }
       };
 

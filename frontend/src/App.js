@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import BuyTickets from "./pages/BuyTickets";
 import Home from "./pages/Home";
 import Location from "./pages/Location";
@@ -13,30 +13,38 @@ import Bookings from "./pages/dashboard/Bookings";
 import EditEvents from "./pages/dashboard/EditMovie";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import PrivateRoute from "./components/PrivateRoute";
+import Profile from "./pages/dashboard/Profile";
+import MyBookings from "./pages/dashboard/MyBookings";
 
 const App = () => {
   return (
     <div>
-
-      <Navbar />
-      <main>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/movie" element={<Movie />} />
-          <Route path="/location" element={<Location />} />
-          <Route path="/myaccount" element={<MyAccount />} />
-          <Route path="/buytickets" element={<BuyTickets />} />
-          <Route path="/buyticket/:movieId" element={<BuyTickets />} />
-          <Route path="/dashboard" element={<Dashboard />}>
-            <Route path="addevent" element={<AddEvent />} />
-            <Route path="bookings" element={<Bookings />} />
-            <Route path="editevents" element={<EditEvents />} />
-          </Route>
-        </Routes>
-      </main>
-      <Footer />
+      <BrowserRouter>
+        <Navbar />
+        <main>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/movie" element={<Movie />} />
+            <Route path="/location" element={<Location />} />
+            <Route element={<PrivateRoute />}>
+              <Route path="/myaccount" element={<MyAccount />} />
+              <Route path="/dashboard" element={<Dashboard />}>
+                <Route path="profile" element={<Profile />} />
+                <Route path="mybookings" element={<MyBookings />} />
+                <Route path="addevent" element={<AddEvent />} />
+                <Route path="bookings" element={<Bookings />} />
+                <Route path="editevents" element={<EditEvents />} />
+              </Route>
+            </Route>
+            <Route path="/buytickets" element={<BuyTickets />} />
+            <Route path="/buyticket/:movieId" element={<BuyTickets />} />
+          </Routes>
+        </main>
+        <Footer />
+      </BrowserRouter>
     </div>
   );
 };

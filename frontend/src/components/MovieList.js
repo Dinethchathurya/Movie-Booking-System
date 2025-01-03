@@ -1,27 +1,51 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./style/MovieList.css";
-import movies from "../constant/movies";
+import { useSelector } from "react-redux";
+
 function MovieList() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [trailerUrl, setTrailerUrl] = useState("");
+  const BASE_URL = "http://localhost:9000";
 
-  const handleWatchTrailerClick = (trailerUrl) => {
-    setTrailerUrl(trailerUrl);
-    setIsModalOpen(true);
-  };
+  const [movies, setMovies] = useState([]); 
+  const [loading, setLoading] = useState(true); 
+  const [error, setError] = useState(null); 
+  const { currentUser } = useSelector((state) => state.user);
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setTrailerUrl("");
-  };
+  
+  
+  useEffect(() => {
+    const fetchMovies = async () => {
+      try {
+        const response = await fetch(`${BASE_URL}/api/movie/movies`); 
+        if (!response.ok) {
+          throw new Error("Failed to fetch movies");
+        }
+        const data = await response.json(); 
+        setMovies(data); 
+      } catch (err) {
+        setError(err.message); 
+      } finally {
+        setLoading(false); 
+      }
+    };
+
+    fetchMovies();
+  }, []); 
 
   const handleBuyTicketClick = (movieId) => {
-    window.location.href = `/buyticket/${movieId}`;
+    if (!currentUser) {
+      window.location.href = "/login";
+    } else {
+      window.location.href = `/buyticket/${movieId}`;
+    }
   };
 
-  const handleMoreInfoClick = (movieId) => {
-    window.location.href = `/movies/${movieId}`;
-  };
+  if (loading) {
+    return <div className="text-center text-white">Loading movies...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center text-red-500">Error: {error}</div>;
+  }
 
   return (
     <div className="text-center p-5 bg-[#000025]">
@@ -29,61 +53,31 @@ function MovieList() {
         Now Showing
       </h2>
       <div className="movie-grid">
-        {movies
-          .filter((movie) => movie.status === "NOW SCREENING")
-          .map((movie, index) => (
-            <div className="movie-card" key={index}>
-              <div className="movie-image-container">
-                <img
-                  src={movie.image}
-                  alt={movie.title}
-                  className="movie-poster"
-                />
-                <div className="movie-buttons">
-                  <button
-                    className="buy-ticket"
-                    onClick={() => handleBuyTicketClick(movie.id)}
-                  >
-                    Buy Tickets
-                  </button>
-                  <button
-                    className="watch-trailer"
-                    onClick={() => handleWatchTrailerClick(movie.trailerUrl)}
-                  >
-                    Trailer
-                  </button>
-
-                  <a href={movie.info} target="_blank">
-                    <button className="more-info">More Info</button>
-                  </a>
-                </div>
+        {movies.map((movie) => (
+          <div className="movie-card" key={movie._id}>
+            <div className="movie-image-container">
+              <img
+                src={movie.cover}
+                alt={movie.title}
+                className="movie-poster"
+              />
+              <div className="movie-buttons">
+                <button
+                  className="buy-ticket"
+                  onClick={() => handleBuyTicketClick(movie._id)}
+                >
+                  Buy Tickets
+                </button>
+                <a href={movie.imdb} target="_blank" rel="noopener noreferrer">
+                  <button className="more-info">More Info</button>
+                </a>
               </div>
-              <h3 className="movie-title text-white">{movie.title}</h3>
-              <p className="movie-status">{movie.status}</p>
             </div>
-          ))}
-      </div>
-
-      {isModalOpen && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <button className="ss" onClick={handleCloseModal}>
-              X
-            </button>
-            <iframe
-              width="800"
-              height="450"
-              src={`https://www.youtube.com/embed/${
-                trailerUrl.split("v=")[1]
-              }?autoplay=1`}
-              title="Trailer"
-              frameBorder="0"
-              allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
+            <h3 className="movie-title text-white">{movie.title}</h3>
+            <p className="movie-status text-gray-400">{movie.genre}</p>
           </div>
-        </div>
-      )}
+        ))}
+      </div>
     </div>
   );
 }

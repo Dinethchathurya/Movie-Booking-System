@@ -1,95 +1,49 @@
-import { useState } from "react";
-
-const bookings = [
-  {
-    id: 1,
-    cusName: "John Doe",
-    cusEmail: "johndoe@example.com",
-    cusPhone: "+1 234 567 890",
-    movie: "Avengers: Endgame",
-    bookingDate: "2024-12-01",
-    showTime: "2024-12-15 7:00 PM",
-    paymentStatus: "Paid",
-    tickets: 2,
-    totalAmount: "$30",
-    seatNumbers: ["A5", "A6"],
-  },
-  {
-    id: 2,
-    cusName: "Jane Smith",
-    cusEmail: "janesmith@example.com",
-    cusPhone: "+1 987 654 321",
-    movie: "The Batman",
-    bookingDate: "2024-12-03",
-    showTime: "2024-12-20 5:00 PM",
-    paymentStatus: "Pending",
-    tickets: 4,
-    totalAmount: "$60",
-    seatNumbers: ["B12", "B13", "B14", "B15"],
-  },
-  {
-    id: 3,
-    cusName: "Mark Johnson",
-    cusEmail: "markj@example.com",
-    cusPhone: "+1 555 123 456",
-    movie: "Interstellar",
-    bookingDate: "2024-12-04",
-    showTime: "2024-12-18 8:00 PM",
-    paymentStatus: "Paid",
-    tickets: 1,
-    totalAmount: "$15",
-    seatNumbers: ["C7"],
-  },
-  {
-    id: 4,
-    cusName: "Emma Davis",
-    cusEmail: "emmad@example.com",
-    cusPhone: "+1 321 654 987",
-    movie: "Inception",
-    bookingDate: "2024-12-05",
-    showTime: "2024-12-22 9:00 PM",
-    paymentStatus: "Cancelled",
-    tickets: 3,
-    totalAmount: "$45",
-    seatNumbers: ["D1", "D2", "D3"],
-  },
-  {
-    id: 5,
-    cusName: "Chris Lee",
-    cusEmail: "chrislee@example.com",
-    cusPhone: "+1 777 888 999",
-    movie: "Titanic",
-    bookingDate: "2024-12-06",
-    showTime: "2024-12-25 6:00 PM",
-    paymentStatus: "Paid",
-    tickets: 2,
-    totalAmount: "$30",
-    seatNumbers: ["E20", "E21"],
-  },
-];
+import { useState, useEffect } from "react";
 
 function Bookings() {
+  const BASE_URL = "http://localhost:9000";
+
+  const [bookings, setBookings] = useState([]);
   const [filter, setFilter] = useState("");
 
-  const filteredBookings = bookings.filter(
+  useEffect(() => {
+    fetch(`${BASE_URL}/api/booking/bookings`,
+      {
+        credentials: "include",
+      })
+      .then((res) => res.json())
+      .then((data) => setBookings(data.bookings))
+      .catch((error) => console.error("Error fetching bookings:", error));
+  }, []);
+
+  const handleDelete = async (id) => {
+    try {
+      const res = await fetch(`${BASE_URL}/api/booking/deletebooking/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+
+      if (res.ok) {
+        setBookings((prevBookings) =>
+          prevBookings.filter((booking) => booking.id !== id)
+        );
+        alert("Booking deleted successfully!");
+      } else {
+        const errorData = await res.json();
+        alert(`Failed to delete booking: ${errorData.message}`);
+      }
+    } catch (error) {
+      console.error("Error deleting booking:", error);
+      alert("An error occurred while deleting the booking.");
+    }
+  };
+
+const filteredBookings = bookings.filter(
     (booking) =>
       booking.cusName.toLowerCase().includes(filter.toLowerCase()) ||
       booking.movie.toLowerCase().includes(filter.toLowerCase()) ||
       booking.paymentStatus.toLowerCase().includes(filter.toLowerCase())
   );
-
-  const getPaymentStatusColor = (status) => {
-    switch (status) {
-      case "Paid":
-        return "bg-green-500 text-white";
-      case "Pending":
-        return "bg-yellow-500 text-white";
-      case "Cancelled":
-        return "bg-red-500 text-white";
-      default:
-        return "bg-gray-500 text-white";
-    }
-  };
 
   return (
     <div className="overflow-x-auto text-black">
@@ -105,7 +59,7 @@ function Bookings() {
         />
       </div>
 
-      <table className="table table-xs sm:table-md text-black over">
+      <table className="table table-xs sm:table-md text-black">
         <thead>
           <tr>
             <th>ID</th>
@@ -115,10 +69,10 @@ function Bookings() {
             <th>Movie</th>
             <th>Booking Date</th>
             <th>Show Time</th>
-            <th>Payment Status</th>
             <th>Tickets</th>
             <th>Seat Numbers</th>
             <th>Total Amount</th>
+            <th>Delete</th>
           </tr>
         </thead>
         <tbody>
@@ -131,30 +85,20 @@ function Bookings() {
               <td>{booking.movie}</td>
               <td>{booking.bookingDate}</td>
               <td>{booking.showTime}</td>
-              <td className={`${getPaymentStatusColor(booking.paymentStatus)}`}>
-                {booking.paymentStatus}
-              </td>
               <td>{booking.tickets}</td>
               <td>{booking.seatNumbers.join(", ")}</td>
               <td>{booking.totalAmount}</td>
+              <td>
+                <button
+                  onClick={() => handleDelete(booking.id)}
+                  className="btn btn-sm btn-danger"
+                >
+                  Delete
+                </button>
+              </td>
             </tr>
           ))}
         </tbody>
-        <tfoot>
-          <tr>
-            <th>ID</th>
-            <th>Customer Name</th>
-            <th>Email</th>
-            <th>Phone</th>
-            <th>Movie</th>
-            <th>Booking Date</th>
-            <th>Show Time</th>
-            <th>Payment Status</th>
-            <th>Tickets</th>
-            <th>Seat Numbers</th>
-            <th>Total Amount</th>
-          </tr>
-        </tfoot>
       </table>
     </div>
   );

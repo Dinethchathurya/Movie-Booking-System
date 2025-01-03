@@ -8,8 +8,41 @@ export default function MovieForm() {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = async (data) => {
+    const BASE_URL = "http://localhost:9000";
+
+    try {
+      const response = await fetch(`${BASE_URL}/api/movie/addmovie`, {
+        method: "POST",
+        credentials: 'include',
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title: data.title,
+          genre: data.genre,
+          dates: [data.startDate, data.endDate], 
+          time: data.showTime,
+          price: data.price,
+          cover: data.coverUrl,
+          poster: data.posterUrl,
+          imdb: data.imdb,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        alert(`Failed to add movie: ${result.message}`);
+        return;
+      }
+
+      alert("Movie added successfully!");
+      console.log(result);
+    } catch (error) {
+      console.error("Error adding movie:", error);
+      alert("An error occurred while adding the movie.");
+    }
   };
 
   return (
@@ -24,7 +57,7 @@ export default function MovieForm() {
               id="movieTitle"
               type="text"
               placeholder="Enter movie title"
-              {...register("Movie Title", { required: true })}
+              {...register("title", { required: true })}
               className="input input-bordered w-full bg-gray-200 text-black"
             />
             {errors["Movie Title"] && (
@@ -38,7 +71,7 @@ export default function MovieForm() {
             </label>
             <select
               id="genre"
-              {...register("Genre", { required: true })}
+              {...register("genre", { required: true })}
               className="select select-bordered w-full bg-gray-200 text-black"
             >
               <option value="Action">Action</option>
@@ -59,19 +92,18 @@ export default function MovieForm() {
               Date Range
             </label>
             <div className="flex space-x-4">
-              <input
-                id="startDate"
-                type="date"
-                {...register("Start Date", { required: true })}
-                className="input input-bordered w-full bg-gray-200 text-black"
-              />
-              <span>to</span>
-              <input
-                id="endDate"
-                type="date"
-                {...register("End Date", { required: true })}
-                className="input input-bordered w-full bg-gray-200 text-black"
-              />
+            <input
+  id="startDate"
+  type="date"
+  {...register("startDate", { required: true })}
+  className="input input-bordered w-full bg-gray-200 text-black"
+/>
+<input
+  id="endDate"
+  type="date"
+  {...register("endDate", { required: true })}
+  className="input input-bordered w-full bg-gray-200 text-black"
+/>
             </div>
             {errors["Start Date"] && (
               <p className="text-red-500 text-sm">Start Date is required.</p>
@@ -87,7 +119,7 @@ export default function MovieForm() {
             </label>
             <select
               id="showTime"
-              {...register("Show Time", { required: true })}
+              {...register("showTime", { required: true })}
               className="select select-bordered w-full bg-gray-200 text-black"
             >
               <option value="10:30 AM">10:30 AM</option>
@@ -108,7 +140,7 @@ export default function MovieForm() {
               id="ticketPrice"
               type="number"
               placeholder="Enter ticket price"
-              {...register("Ticket Price", { required: true, min: 0 })}
+              {...register("price", { required: true, min: 0 })}
               className="input input-bordered w-full bg-gray-200 text-black"
             />
             {errors["Ticket Price"] && (
@@ -125,8 +157,9 @@ export default function MovieForm() {
             </label>
             <input
               id="coverImage"
-              type="file"
-              {...register("Cover Image", { required: true })}
+              type="url"
+              placeholder="Enter cover image URL"
+              {...register("coverUrl", { required: true })}
               className="input input-bordered w-full bg-gray-200 text-black"
             />
             {errors["Cover Image"] && (
@@ -140,8 +173,9 @@ export default function MovieForm() {
             </label>
             <input
               id="posterImage"
-              type="file"
-              {...register("Poster Image", { required: true })}
+              type="url"
+              placeholder="Enter poster image URL"
+              {...register("posterUrl", { required: true })}
               className="input input-bordered w-full bg-gray-200 text-black"
             />
             {errors["Poster Image"] && (
@@ -157,7 +191,7 @@ export default function MovieForm() {
               id="imdbUrl"
               type="url"
               placeholder="Enter IMDb URL"
-              {...register("IMDb URL")}
+              {...register("imdb")}
               className="input input-bordered w-full bg-gray-200 text-black"
             />
           </div>

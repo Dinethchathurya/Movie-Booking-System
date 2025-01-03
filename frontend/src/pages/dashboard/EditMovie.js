@@ -1,120 +1,235 @@
-import { useState } from "react";
-import { FaEdit, FaTrash } from "react-icons/fa";
-
-// Updated movie data
-const initialMovies = [
-  {
-    id: 1,
-    title: "Gladiater 2",
-    genre: "Spoactionrt",
-    DateStart: "2024-12-01",
-    DateEnd: "2024-12-10",
-    showTime: "10:30 AM",
-    imdb: "https://www.imdb.com/title/tt9218128/",
-    price: "$100",
-    coverImage: "https://via.placeholder.com/150",
-    posterImage: "https://via.placeholder.com/150",
-    imdbUrl: "https://imdb.com/football-match",
-    status: "Now Screening",
-  },
-];
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 function EditMovie() {
-  const [movies, setMovies] = useState(initialMovies);
+  const BASE_URL = "http://localhost:9000";
+
+  const [movies, setMovies] = useState([]);
   const [filter, setFilter] = useState("");
 
-  // Filter movies based on title, genre, or location
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchMovies = async () => {
+      try {
+        const response = await fetch(`${BASE_URL}/api/movie/allmovies`, {
+          credentials: "include",
+        });
+        if (!response.ok) throw new Error("Failed to fetch movies");
+        const data = await response.json();
+        setMovies(data);
+      } catch (error) {
+        console.error("Failed to fetch movies:", error);
+      }
+    };
+
+    fetchMovies();
+  }, []);
+
+  const handleEdit = async (id, updatedMovie) => {
+    try {
+      const response = await fetch(`${BASE_URL}/api/movie/update/${id}`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedMovie),
+      });
+      if (!response.ok) throw new Error("Failed to update movie");
+      const updatedData = await response.json();
+      setMovies((prev) =>
+        prev.map((movie) => (movie._id === id ? updatedData : movie))
+      );
+      navigate("/movie");
+    } catch (error) {
+      console.error("Failed to update movie:", error);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      const response = await fetch(`${BASE_URL}/api/movie/delete/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      if (!response.ok) throw new Error("Failed to delete movie");
+      setMovies((prev) => prev.filter((movie) => movie._id !== id));
+    } catch (error) {
+      console.error("Failed to delete movie:", error);
+    }
+  };
+
   const filteredMovies = movies.filter(
     (movie) =>
       movie.title.toLowerCase().includes(filter.toLowerCase()) ||
-      movie.genre.toLowerCase().includes(filter.toLowerCase()) ||
-      movie.location?.toLowerCase().includes(filter.toLowerCase()) // Handles movies without a location property
+      movie.genre.toLowerCase().includes(filter.toLowerCase())
   );
 
   return (
     <div className="overflow-x-auto">
-      <div className="text-xl pb-4 text-center text-black">
-        Now Showing Movies
-      </div>
+      <div className="text-xl pb-4 text-center text-black">Now Showing Movies</div>
 
       <div className="flex flex-col sm:flex-row gap-4">
-        {/* Filter Input */}
         <div>
           <input
             type="text"
-            placeholder="Search by Title, Genre or Location"
-            className="input input-bordered border-gray-400 m-2 w-full max-w-xs text-sm"
+            placeholder="Search by Title or Genre"
+            className="input input-bordered border-gray-400 m-2 w-full max-w-xs text-sm text-black"
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
           />
         </div>
       </div>
 
-      <table className="table table-xs sm:table-md text-black">
+      <table className="table table-xs sm:table-md text-black ">
         <thead>
           <tr>
             <th>ID</th>
-            <th>Image</th>
             <th>Title</th>
-            <th>Status</th>
-            <th>Release Date Range</th>
-            <th>Show Time Range</th>
+            <th>Show Time</th>
             <th>Price</th>
             <th>IMDb URL</th>
-            <th>Edit</th>
+            <th>Cover</th>
+            <th>Poster</th>
+            <th>Dates</th>
+            <th>Save</th>
             <th>Delete</th>
           </tr>
         </thead>
         <tbody>
           {filteredMovies.map((movie) => (
-            <tr key={movie.id}>
-              <td>{movie.id}</td>
+            <tr key={movie._id}>
+              <td>{movie._id}</td>
               <td>
-                <img
-                  src={movie.coverImage}
-                  alt={movie.title}
-                  className="w-16 h-16"
+                <input
+                  type="text"
+                  value={movie.title}
+                  onChange={(e) =>
+                    setMovies((prev) =>
+                      prev.map((m) =>
+                        m._id === movie._id ? { ...m, title: e.target.value } : m
+                      )
+                    )
+                  }
+                  className="input input-bordered input-sm"
                 />
               </td>
-              <td>{movie.title}</td>
-              <td>{movie.status}</td>
               <td>
-                {movie.DateStart} - {movie.DateEnd}
+                <input
+                  type="text"
+                  value={movie.time}
+                  onChange={(e) =>
+                    setMovies((prev) =>
+                      prev.map((m) =>
+                        m._id === movie._id ? { ...m, time: e.target.value } : m
+                      )
+                    )
+                  }
+                  className="input input-bordered input-sm"
+                />
               </td>
-              <td>{movie.showTime}</td>
-              <td>{movie.price}</td>
               <td>
-                <a href={movie.imdb} target="_blank" rel="noopener noreferrer">
-                  {movie.imdb}
-                </a>
+                <input
+                  type="number"
+                  value={movie.price}
+                  onChange={(e) =>
+                    setMovies((prev) =>
+                      prev.map((m) =>
+                        m._id === movie._id ? { ...m, price: e.target.value } : m
+                      )
+                    )
+                  }
+                  className="input input-bordered input-sm"
+                />
               </td>
               <td>
-                <button onClick={""} className="btn btn-sm btn-primary">
-                  <FaEdit />
+                <input
+                  type="url"
+                  value={movie.imdb}
+                  onChange={(e) =>
+                    setMovies((prev) =>
+                      prev.map((m) =>
+                        m._id === movie._id ? { ...m, imdb: e.target.value } : m
+                      )
+                    )
+                  }
+                  className="input input-bordered input-sm"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  value={movie.cover}
+                  onChange={(e) =>
+                    setMovies((prev) =>
+                      prev.map((m) =>
+                        m._id === movie._id ? { ...m, cover: e.target.value } : m
+                      )
+                    )
+                  }
+                  className="input input-bordered input-sm"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  value={movie.poster}
+                  onChange={(e) =>
+                    setMovies((prev) =>
+                      prev.map((m) =>
+                        m._id === movie._id ? { ...m, poster: e.target.value } : m
+                      )
+                    )
+                  }
+                  className="input input-bordered input-sm"
+                />
+              </td>
+              <td>
+                <div className="flex gap-2">
+                  {movie.dates.map((date, index) => (
+                    <input
+                      key={index}
+                      type="date"
+                      value={new Date(date).toISOString().split("T")[0]}
+                      onChange={(e) =>
+                        setMovies((prev) =>
+                          prev.map((m) =>
+                            m._id === movie._id
+                              ? {
+                                  ...m,
+                                  dates: m.dates.map((d, i) =>
+                                    i === index ? e.target.value : d
+                                  ),
+                                }
+                              : m
+                          )
+                        )
+                      }
+                      className="input input-bordered input-sm"
+                    />
+                  ))}
+                </div>
+              </td>
+              <td>
+                <button
+                  onClick={() => handleEdit(movie._id, movie)}
+                  className="btn btn-sm btn-primary"
+                >
+                  Save
                 </button>
               </td>
               <td>
-                <button onClick={""} className="btn btn-sm btn-danger">
-                  <FaTrash />
+                <button
+                  onClick={() => handleDelete(movie._id)}
+                  className="btn btn-sm btn-danger"
+                >
+                  Delete
                 </button>
               </td>
             </tr>
           ))}
         </tbody>
-        <tfoot>
-          <tr>
-            <th>ID</th>
-            <th>Image</th>
-            <th>Title</th>
-            <th>Status</th>
-            <th>Release Date Range</th>
-            <th>Show Time Range</th>
-            <th>Price</th>
-            <th>IMDb URL</th>
-            <th>Edit</th>
-            <th>Delete</th>
-          </tr>
-        </tfoot>
       </table>
     </div>
   );
